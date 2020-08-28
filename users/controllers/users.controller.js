@@ -1,6 +1,5 @@
-const UserModel = require('../models/users.model');
+const UserModel = require('../models/users2');
 const crypto = require('crypto');
-
 
 exports.insert = (req, res) => {
   let salt = crypto.randomBytes(16).tostring('base64');
@@ -20,6 +19,7 @@ exports.getById = (req, res) => {
   UserModel.findById(req.params.userId).then((result) => {
     res.status(200).send(result)
   });
+
 };
 
 exports.patchById = (req, res) => {

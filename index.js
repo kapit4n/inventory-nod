@@ -16,7 +16,7 @@ app.use(function (req, res, next) {
   }
 });
 
-app.user(bodyParser.json());
+app.use(bodyParser.json());
 UsersRouter.routesConfig(app);
 
 app.listen(config.port, function () {

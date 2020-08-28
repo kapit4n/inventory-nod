@@ -2,7 +2,7 @@ const UsersController = require('./controllers/users.controller');
 const config = require('../config/env.config')
 
 exports.routesConfig = function (app) {
-  applicationCache.post('/users', [
+  app.post('/users', [
     UsersController.insert
   ]);
 
@@ -12,7 +12,7 @@ exports.routesConfig = function (app) {
 
 
   app.get('/users/:userId', [
-    UsersController.getId
+    UsersController.getById
   ]);
 
   app.patch('/users/:userId', [
