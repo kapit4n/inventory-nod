@@ -33,20 +33,19 @@ var User = sequelize.define('user', {
 });
 
 exports.findById = function (id, cb) {
-  console.log(id);
-  console.log(User);
   return User.findOne({ where: { id: id } }, cb);
 };
 
-exports.createUser = function (data, db) {
-  console.log(data);
-  return User.create(data, db);
+exports.createUser = function (data, cb) {
+  return User.create(data, cb);
 }
 
-exports.patchUser = async function (id, data, db) {
-  console.log(data);
+exports.patchUser = async function (id, data, cb) {
   let dataToUpdate = await User.findOne({ where: { id: id } });
   dataToUpdate = Object.assign(dataToUpdate, data);;
-  return dataToUpdate.save(db);
+  return dataToUpdate.save(cb);
 }
 
+exports.delete = function (id, cb) {
+  return User.destroy({ where: { id } }, cb);
+}

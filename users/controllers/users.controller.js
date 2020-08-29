@@ -54,9 +54,9 @@ exports.list = (req, res) => {
 };
 
 exports.removeById = (req, res) => {
-  UserModel.removeById(req.params.userId)
+  UserModel.delete(req.params.userId)
     .then((result) => {
-      res.status(204).send({});
-    });
+      res.sendStatus(204).send(result);
+    }).catch(err => res.sendStatus(204).send(err));
 };
 
