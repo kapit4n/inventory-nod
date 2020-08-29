@@ -37,3 +37,8 @@ exports.findById = function (id, cb) {
   console.log(User);
   return User.findOne({ where: { id: id } }, cb);
 };
+
+exports.createUser = function (data, db) {
+  console.log(data);
+  return User.create(data, db);
+}
