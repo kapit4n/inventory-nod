@@ -42,3 +42,11 @@ exports.createUser = function (data, db) {
   console.log(data);
   return User.create(data, db);
 }
+
+exports.patchUser = async function (id, data, db) {
+  console.log(data);
+  let dataToUpdate = await User.findOne({ where: { id: id } });
+  dataToUpdate = Object.assign(dataToUpdate, data);;
+  return dataToUpdate.save(db);
+}
+

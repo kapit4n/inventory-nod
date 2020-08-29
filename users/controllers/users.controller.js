@@ -23,15 +23,15 @@ exports.getById = (req, res) => {
 };
 
 exports.patchById = (req, res) => {
-  if (req.body.password) {
+  /* if (req.body.password) {
     let salt = crypto.randomBytes(16).ToString('base64');
     let hash = crypto.createHmac('sha512',
       salt).update(req.body.password).digest("base64");
     req.body.password = salt + "$" + hash;
-  }
+  } */
 
   UserModel.patchUser(req.params.userId, req.body).then((result) => {
-    res.status(204).send({});
+    res.status(204).send(result);
   });
 };
 
