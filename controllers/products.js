@@ -3,12 +3,12 @@ const models = require('../models');
 const { Product } = models;
 
 exports.list = async function (req, res) {
-  const products = await Product.findAll()
+  const products = await Product.findAll({ include: { all: true } })
   res.json(products)
 }
 
 exports.getById = async function (req, res) {
-  const product = await Product.findOne({ where: { id: req.params.id } })
+  const product = await Product.findOne({ where: { id: req.params.id }, include: { all: true } })
   res.json(product)
 }
 
