@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "DENTI CODE SERVER",
+    "description": "INVENTORY SERVER",
     "version": "1.0.0",
-    "title": "Swagger denti code",
+    "title": "Swagger inventory",
     "termsOfService": "http://swagger.io/terms/",
     "contact": {
       "email": "luis.arce22@gmail.com"
@@ -761,7 +761,7 @@
         ],
         "parameters": [
           {
-            "name": "categoryId",
+            "name": "Id",
             "in": "path",
             "description": "ID of category to return",
             "required": true,
@@ -801,7 +801,7 @@
         ],
         "parameters": [
           {
-            "name": "categoryId",
+            "name": "Id",
             "in": "path",
             "description": "ID of category that needs to be updated",
             "required": true,
@@ -816,9 +816,16 @@
             "type": "string"
           },
           {
-            "name": "status",
+            "name": "code",
             "in": "formData",
-            "description": "Updated status of the category",
+            "description": "Updated code of the category",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "Updated description of the category",
             "required": false,
             "type": "string"
           }
@@ -843,15 +850,9 @@
         ],
         "parameters": [
           {
-            "name": "api_key",
-            "in": "header",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "categoryId",
+            "name": "Id",
             "in": "path",
-            "description": "Category id to delete",
+            "description": "Category Id to delete",
             "required": true,
             "type": "integer",
             "format": "int64"
