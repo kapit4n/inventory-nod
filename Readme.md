@@ -1,10 +1,8 @@
+# api
+Inventory code with node js and sequelize mysql
+# generate model
+- npx sequelize-cli model:generate --name Product --attributes name:sstring,description:string
 
-
-- npx sequelize db:create
-
-- npx sequelize-cli model:generate --name Product --attributes name:string,price:string,description:string
+- npx sequelize-cli db:migrate:undo
 - npx sequelize-cli db:migrate
-
-- npx sequelize-cli seed:generate --name demo-products
-
 - npx sequelize-cli db:seed:all

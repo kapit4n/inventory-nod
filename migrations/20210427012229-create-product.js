@@ -11,9 +11,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      price: {
-        type: Sequelize.STRING
-      },
       description: {
         type: Sequelize.STRING
       },

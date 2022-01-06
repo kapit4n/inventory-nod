@@ -1,0 +1,295 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "DENTI CODE SERVER",
+    "version": "1.0.0",
+    "title": "Swagger denti code",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "luis.arce22@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "",
+  "tags": [
+    {
+      "name": "denti",
+      "description": "Everything about your Inventory",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Get all products",
+        "description": "",
+        "operationId": "getProducts",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Product"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "productstore_auth": [
+              "write:products",
+              "read:products"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Add a new product to the db",
+        "description": "",
+        "operationId": "addProduct",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Product object that needs to be added to the db",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "productstore_auth": [
+              "write:products",
+              "read:products"
+            ]
+          }
+        ]
+      }
+    },
+    "/products/{Id}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Find product by ID",
+        "description": "Returns a single product",
+        "operationId": "getProductById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of product to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Updates a product in the store with form data",
+        "description": "",
+        "operationId": "updateProductWithForm",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of product that needs to be updated",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Updated name of the product",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "formData",
+            "description": "Updated status of the product",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "productstore_auth": [
+              "write:products",
+              "read:products"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Deletes a product",
+        "description": "",
+        "operationId": "deleteProduct",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "Product id to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "security": [
+          {
+            "productstore_auth": [
+              "write:products",
+              "read:products"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    },
+    "productstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://productstore.swagger.io/oauth/authorize",
+      "flow": "implicit",
+      "scopes": {
+        "read:products": "read your products",
+        "write:products": "modify products in your account"
+      }
+    }
+  },
+  "definitions": {
+    "Product": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+          "example": "Product 1"
+        },
+        "description": {
+          "type": "string",
+          "example": "Product Description"
+        }
+      },
+      "xml": {
+        "name": "Product"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
