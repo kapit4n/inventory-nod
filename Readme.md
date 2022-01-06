@@ -8,6 +8,9 @@ API for https://github.com/kapit4n/ng-vendei-full
 
 - npx sequelize-cli model:generate --name Client --attributes name:string,code:string,address:string
 
+- npx sequelize-cli model:generate --name Cashier --attributes name:string,code:string,address:string
+
+
 - npx sequelize-cli db:migrate:undo
 - npx sequelize-cli db:migrate
 - npx sequelize-cli db:seed:all
