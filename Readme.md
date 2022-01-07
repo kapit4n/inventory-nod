@@ -14,7 +14,7 @@ API for https://github.com/kapit4n/ng-vendei-full
 
 - npx sequelize-cli model:generate --name Category --attributes name:string,code:string,description:string
 
-- npx sequelize-cli migration:create --name modify_products_add_new_fields
+- npx sequelize-cli migration:create --name modify_products_add_new_fields_img
 
 
 - npx sequelize-cli db:migrate:undo

@@ -175,6 +175,13 @@
             "type": "string"
           },
           {
+            "name": "img",
+            "in": "formData",
+            "description": "Updated img of the product",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "categoryId",
             "in": "formData",
             "description": "Updated description of the product",
@@ -880,6 +887,10 @@
         "code": {
           "type": "string",
           "example": "PRODUCT-001"
+        },
+        "img": {
+          "type": "string",
+          "example": "https://coffeeaffection.com/wp-content/uploads/2021/02/does-a-cappuccino-have-caffeine.jpg"
         },
         "description": {
           "type": "string",
