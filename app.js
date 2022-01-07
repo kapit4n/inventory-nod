@@ -7,6 +7,7 @@ var cors = require('cors')
 
 var indexRouter = require('./routes/index');
 var productsRouter = require('./routes/products');
+var productPresentationsRouter = require('./routes/productPresentations');
 var clientsRouter = require('./routes/clients');
 var cashiersRouter = require('./routes/cashiers');
 var categoriesRouter = require('./routes/categories');
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/products', productsRouter);
+app.use('/productPresentations', productPresentationsRouter);
 app.use('/clients', clientsRouter);
 app.use('/cashiers', cashiersRouter);
 app.use('/categories', categoriesRouter);
