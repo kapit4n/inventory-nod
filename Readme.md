@@ -26,3 +26,7 @@ unitOfMeasure, product, brand, currentPrice
 - npx sequelize-cli db:seed:all
 
 # Next improvements
+
+
+# Run it
+npm run start
