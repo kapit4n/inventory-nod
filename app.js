@@ -12,12 +12,13 @@ var clientsRouter = require('./routes/clients');
 var cashiersRouter = require('./routes/cashiers');
 var categoriesRouter = require('./routes/categories');
 var vendorsRouter = require('./routes/vendors');
+var uploadProductImage = require('./routes/upload-product-image');
 
 var app = express();
 
 function looksLikeApiRequest(req) {
   var u = req.originalUrl || req.url || '';
-  return /^\/(products|productPresentations|clients|cashiers|categories|vendors)(\/|\?|$)/.test(u);
+  return /^\/(products|productPresentations|clients|cashiers|categories|vendors|uploads)(\/|\?|$)/.test(u);
 }
 
 // view engine setup
@@ -25,10 +26,17 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));
-app.use(cors())
+app.use(cors());
+app.use(cookieParser());
+/**
+ * Multipart upload must run before express.json / urlencoded so the stream is not consumed.
+ * Primary: POST /products/upload-image (same prefix as the rest of the API — reliable behind proxies).
+ * Alias: POST /uploads/product-image (documented path; static files still served from /uploads/products/...).
+ */
+app.post('/products/upload-image', uploadProductImage);
+app.post('/uploads/product-image', uploadProductImage);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

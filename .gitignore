@@ -1,3 +1,5 @@
 ./node_modules
 node_modules/
 database.sqlite
+public/uploads/products/*
+!public/uploads/products/.gitkeep
