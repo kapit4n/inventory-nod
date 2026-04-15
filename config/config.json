@@ -1,9 +1,14 @@
 {
   "development": {
-    "username": "root",
-    "password": "root",
-    "database": "inventory_db",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "sqlite",
+    "storage": "./database.sqlite"
+  },
+  "test": {
+    "dialect": "sqlite",
+    "storage": "./database.sqlite"
+  },
+  "production": {
+    "dialect": "sqlite",
+    "storage": "./database.sqlite"
   }
 }

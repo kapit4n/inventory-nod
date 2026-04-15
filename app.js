@@ -11,8 +11,14 @@ var productPresentationsRouter = require('./routes/productPresentations');
 var clientsRouter = require('./routes/clients');
 var cashiersRouter = require('./routes/cashiers');
 var categoriesRouter = require('./routes/categories');
+var vendorsRouter = require('./routes/vendors');
 
 var app = express();
+
+function looksLikeApiRequest(req) {
+  var u = req.originalUrl || req.url || '';
+  return /^\/(products|productPresentations|clients|cashiers|categories|vendors)(\/|\?|$)/.test(u);
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +37,7 @@ app.use('/productPresentations', productPresentationsRouter);
 app.use('/clients', clientsRouter);
 app.use('/cashiers', cashiersRouter);
 app.use('/categories', categoriesRouter);
+app.use('/vendors', vendorsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -39,12 +46,24 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
+  var status = err.status || 500;
+  var accept = req.headers.accept || '';
+  var wantsJson =
+    looksLikeApiRequest(req) ||
+    req.xhr ||
+    (accept.indexOf('application/json') !== -1);
+
+  if (wantsJson) {
+    var body = { error: err.message };
+    if (req.app.get('env') === 'development' && err.stack) {
+      body.stack = err.stack;
+    }
+    return res.status(status).json(body);
+  }
+
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
+  res.status(status);
   res.render('error');
 });
 
