@@ -52,17 +52,69 @@ module.exports = {
     const catIds = categories.map((c) => c.id);
     const venIds = vendors.map((v) => v.id);
 
+    // Images are served statically from inventory-nod/public/uploads/products/*
+    // Keep this list in sync with ng-vendei-full/src/assets/vendei/demo-products/*
+    const demoImageFiles = [
+      'apple.jpg',
+      'bananas.jpg',
+      'bread.jpg',
+      'milk.jpg',
+      'eggs.jpg',
+      'pasta.jpg',
+      'rice.jpg',
+      'coffee.jpg',
+      'tea.jpg',
+      'olive-oil.jpg',
+      'cheese.jpg',
+      'chicken.jpg',
+      'cereal.jpg',
+      'yogurt.jpg',
+      'orange-juice.jpg',
+      'tomato.jpg',
+      'onion.jpg',
+      'potato.jpg',
+      'water.jpg',
+      'toothpaste.jpg',
+    ];
+
+    const demoProducts = [
+      { name: 'Red Apple (1 lb)', description: 'Fresh produce', categoryCode: 'SEED-CAT-02' },
+      { name: 'Bananas (1 lb)', description: 'Fresh produce', categoryCode: 'SEED-CAT-02' },
+      { name: 'Baguette Bread', description: 'Bakery', categoryCode: 'SEED-CAT-02' },
+      { name: 'Milk (1 L)', description: 'Dairy', categoryCode: 'SEED-CAT-02' },
+      { name: 'Eggs (12 pack)', description: 'Dairy & eggs', categoryCode: 'SEED-CAT-02' },
+      { name: 'Pasta (500 g)', description: 'Pantry staple', categoryCode: 'SEED-CAT-02' },
+      { name: 'White Rice (1 kg)', description: 'Pantry staple', categoryCode: 'SEED-CAT-02' },
+      { name: 'Coffee (ground, 250 g)', description: 'Beverage', categoryCode: 'SEED-CAT-02' },
+      { name: 'Black Tea (20 bags)', description: 'Beverage', categoryCode: 'SEED-CAT-02' },
+      { name: 'Olive Oil (500 ml)', description: 'Cooking', categoryCode: 'SEED-CAT-02' },
+      { name: 'Cheddar Cheese (200 g)', description: 'Dairy', categoryCode: 'SEED-CAT-02' },
+      { name: 'Chicken Breast (1 lb)', description: 'Meat', categoryCode: 'SEED-CAT-02' },
+      { name: 'Laundry Detergent (1.5 L)', description: 'Cleaning', categoryCode: 'SEED-CAT-04' },
+      { name: 'Paper Towels (2 rolls)', description: 'Household', categoryCode: 'SEED-CAT-04' },
+      { name: 'Hand Soap (500 ml)', description: 'Household', categoryCode: 'SEED-CAT-04' },
+      { name: 'Toothpaste (120 g)', description: 'Personal care', categoryCode: 'SEED-CAT-04' },
+      { name: 'Shampoo (400 ml)', description: 'Personal care', categoryCode: 'SEED-CAT-04' },
+      { name: 'Smartphone (Demo)', description: 'Device', categoryCode: 'SEED-CAT-01' },
+      { name: 'Wireless Headphones (Demo)', description: 'Accessory', categoryCode: 'SEED-CAT-01' },
+      { name: 'Bottled Water (1.5 L)', description: 'Beverage', categoryCode: 'SEED-CAT-02' },
+    ];
+
+    const categoryIdByCode = new Map(categories.map((c) => [c.code, c.id]));
+
     const products = [];
-    for (let i = 1; i <= 20; i += 1) {
-      const n = String(i).padStart(2, '0');
-      const categoryId = catIds[(i - 1) % catIds.length];
-      const vendorId = venIds[(i - 1) % venIds.length];
+    for (let i = 0; i < demoProducts.length; i += 1) {
+      const n = String(i + 1).padStart(2, '0');
+      const vendorId = venIds[i % venIds.length];
+      const def = demoProducts[i];
+      const categoryId = categoryIdByCode.get(def.categoryCode) ?? catIds[i % catIds.length];
+      const file = demoImageFiles[i % demoImageFiles.length];
       products.push(
         await Product.create({
-          name: `Demo Product ${n}`,
-          description: `Seeded product ${n} for inventory demo`,
+          name: def.name,
+          description: def.description,
           code: `SEED-PRD-${n}`,
-          img: `product-${n}.jpg`,
+          img: `/uploads/products/${file}`,
           categoryId,
           vendorId,
         })
