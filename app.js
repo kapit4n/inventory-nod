@@ -12,13 +12,14 @@ var clientsRouter = require('./routes/clients');
 var cashiersRouter = require('./routes/cashiers');
 var categoriesRouter = require('./routes/categories');
 var vendorsRouter = require('./routes/vendors');
+var unitOfMeasuresRouter = require('./routes/unitOfMeasures');
 var uploadProductImage = require('./routes/upload-product-image');
 
 var app = express();
 
 function looksLikeApiRequest(req) {
   var u = req.originalUrl || req.url || '';
-  return /^\/(products|productPresentations|clients|cashiers|categories|vendors|uploads)(\/|\?|$)/.test(u);
+  return /^\/(products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads)(\/|\?|$)/.test(u);
 }
 
 // view engine setup
@@ -46,6 +47,7 @@ app.use('/clients', clientsRouter);
 app.use('/cashiers', cashiersRouter);
 app.use('/categories', categoriesRouter);
 app.use('/vendors', vendorsRouter);
+app.use('/unitOfMeasures', unitOfMeasuresRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

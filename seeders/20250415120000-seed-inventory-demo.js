@@ -19,7 +19,7 @@ module.exports = {
     await clearSeedData(queryInterface, Sequelize);
 
     const db = require('../models');
-    const { Category, Vendor, Client, Product, ProductPresentation } = db;
+    const { Category, Vendor, Client, Product, ProductPresentation, UnitOfMeasure, ProductUnitOfMeasure } = db;
 
     const categoryRows = [
       { name: 'Electronics', code: 'SEED-CAT-01', description: 'Devices and accessories', img: 'electronics.jpg' },
@@ -102,6 +102,29 @@ module.exports = {
 
     const categoryIdByCode = new Map(categories.map((c) => [c.code, c.id]));
 
+    const uomRows = await UnitOfMeasure.findAll({ order: [['code', 'ASC']] });
+    const uomIdByCode = new Map(uomRows.map((u) => [u.code, u.id]));
+
+    async function linkProductUnits(productId, codes) {
+      const rows = codes
+        .map((code) => {
+          const unitOfMeasureId = uomIdByCode.get(code);
+          if (!unitOfMeasureId) {
+            return null;
+          }
+          return {
+            productId,
+            unitOfMeasureId,
+            createdAt: now(),
+            updatedAt: now(),
+          };
+        })
+        .filter(Boolean);
+      if (rows.length) {
+        await ProductUnitOfMeasure.bulkCreate(rows);
+      }
+    }
+
     const products = [];
     for (let i = 0; i < demoProducts.length; i += 1) {
       const n = String(i + 1).padStart(2, '0');
@@ -109,27 +132,38 @@ module.exports = {
       const def = demoProducts[i];
       const categoryId = categoryIdByCode.get(def.categoryCode) ?? catIds[i % catIds.length];
       const file = demoImageFiles[i % demoImageFiles.length];
-      products.push(
-        await Product.create({
-          name: def.name,
-          description: def.description,
-          code: `SEED-PRD-${n}`,
-          img: `/uploads/products/${file}`,
-          categoryId,
-          vendorId,
-        })
-      );
+      const created = await Product.create({
+        name: def.name,
+        description: def.description,
+        code: `SEED-PRD-${n}`,
+        img: `/uploads/products/${file}`,
+        categoryId,
+        vendorId,
+      });
+      products.push(created);
+
+      if (def.categoryCode === 'SEED-CAT-01') {
+        await linkProductUnits(created.id, ['UNIT', 'BOX', 'PACK']);
+      } else if (def.categoryCode === 'SEED-CAT-04') {
+        await linkProductUnits(created.id, ['UNIT', 'BOX', 'PACK', 'L', 'ML']);
+      } else {
+        await linkProductUnits(created.id, ['UNIT', 'BOX', 'PACK', 'KG', 'G', 'L', 'ML']);
+      }
     }
 
-    const units = ['units', 'box', 'kg', 'pack'];
+    const presentationUnitCodes = ['UNIT', 'BOX', 'KG', 'PACK'];
     const brands = ['House', 'Value', 'Prime', 'Select'];
 
     for (let i = 0; i < products.length; i += 1) {
       const p = products[i];
       const qty = 10 + i * 4;
+      const code = presentationUnitCodes[i % presentationUnitCodes.length];
+      const uomId = uomIdByCode.get(code);
+      const uomRow = uomRows.find((u) => u.code === code);
       await ProductPresentation.create({
         productId: p.id,
-        unitOfMeasure: units[i % units.length],
+        unitOfMeasureId: uomId || null,
+        unitOfMeasure: uomRow ? uomRow.name : code,
         quantity: qty,
         brand: brands[i % brands.length],
         currentPrice: 9.99 + i * 1.5,

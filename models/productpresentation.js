@@ -14,11 +14,16 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Product, {
         foreignKey: 'productId',
         onDelete: 'CASCADE'
-      })
+      });
+      this.belongsTo(models.UnitOfMeasure, {
+        foreignKey: 'unitOfMeasureId',
+        onDelete: 'SET NULL',
+      });
     }
   };
   ProductPresentation.init({
     unitOfMeasure: DataTypes.STRING,
+    unitOfMeasureId: DataTypes.INTEGER,
     productId: DataTypes.INTEGER,
     quantity: DataTypes.INTEGER,
     brand: DataTypes.STRING,

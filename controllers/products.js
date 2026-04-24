@@ -1,28 +1,105 @@
 const models = require('../models');
 
-const { Product } = models;
+const { Product, ProductUnitOfMeasure, UnitOfMeasure, Category, Vendor } = models;
 
-exports.list = async function (req, res) {
-  const products = await Product.findAll({ include: { all: true } })
-  res.json(products)
+const productInclude = [
+  { model: Category, required: false },
+  { model: Vendor, required: false },
+  { model: UnitOfMeasure, through: { attributes: [] } },
+];
+
+function sanitizeProductAttributes(body) {
+  const o = { ...(body || {}) };
+  delete o.UnitOfMeasures;
+  delete o.unitOfMeasureIds;
+  delete o.Category;
+  delete o.Vendor;
+  delete o.ProductPresentations;
+  delete o.productPresentations;
+  return o;
 }
 
-exports.getById = async function (req, res) {
-  const product = await Product.findOne({ where: { id: req.params.id }, include: { all: true } })
-  res.json(product)
+async function replaceProductUnitLinks(productId, unitOfMeasureIds) {
+  if (!Array.isArray(unitOfMeasureIds)) {
+    return;
+  }
+  const ids = [...new Set(unitOfMeasureIds.map((x) => Number(x)).filter((n) => Number.isFinite(n) && n > 0))];
+  await ProductUnitOfMeasure.destroy({ where: { productId } });
+  if (!ids.length) {
+    return;
+  }
+  await ProductUnitOfMeasure.bulkCreate(
+    ids.map((unitOfMeasureId) => ({
+      productId,
+      unitOfMeasureId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }))
+  );
 }
 
-exports.create = async function (req, res) {
-  const created = await Product.create(req.body)
-  res.json(created)
-}
+exports.list = async function (req, res, next) {
+  try {
+    const products = await Product.findAll({
+      include: productInclude,
+      order: [['id', 'ASC']],
+    });
+    res.json(products);
+  } catch (err) {
+    next(err);
+  }
+};
 
-exports.update = async function (req, res) {
-  await Product.update(req.body,  { where: { id: req.params.id } })
-  res.json(req.body)
-}
+exports.getById = async function (req, res, next) {
+  try {
+    const product = await Product.findOne({
+      where: { id: req.params.id },
+      include: productInclude,
+    });
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.json(product);
+  } catch (err) {
+    next(err);
+  }
+};
 
-exports.delete = async function (req, res) {
-  const result = await Product.destroy({ where: { id: req.params.id } })
-  res.json(result)
-}
+exports.create = async function (req, res, next) {
+  try {
+    const { unitOfMeasureIds, ...rest } = req.body || {};
+    const created = await Product.create(sanitizeProductAttributes(rest));
+    await replaceProductUnitLinks(created.id, unitOfMeasureIds);
+    const full = await Product.findByPk(created.id, { include: productInclude });
+    res.json(full);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.update = async function (req, res, next) {
+  try {
+    const { unitOfMeasureIds, ...rest } = req.body || {};
+    const id = req.params.id;
+    const [updated] = await Product.update(sanitizeProductAttributes(rest), { where: { id } });
+    if (!updated) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    if (unitOfMeasureIds !== undefined) {
+      await replaceProductUnitLinks(id, unitOfMeasureIds);
+    }
+    const full = await Product.findByPk(id, { include: productInclude });
+    res.json(full);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.delete = async function (req, res, next) {
+  try {
+    const result = await Product.destroy({ where: { id: req.params.id } });
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};

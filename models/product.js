@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'vendorId',
         onDelete: 'SET NULL',
       });
+      this.belongsToMany(models.UnitOfMeasure, {
+        through: models.ProductUnitOfMeasure,
+        foreignKey: 'productId',
+        otherKey: 'unitOfMeasureId',
+      });
     }
   };
   Product.init({
