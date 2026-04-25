@@ -2,27 +2,74 @@ const models = require('../models');
 
 const { Client } = models;
 
-exports.list = async function (req, res) {
-  const clients = await Client.findAll()
-  res.json(clients)
+function pickClientPayload(body) {
+  const b = body || {};
+  return {
+    name: b.name != null ? String(b.name).trim() : '',
+    code: b.code != null ? String(b.code).trim() : '',
+    address: b.address != null ? String(b.address).trim() : '',
+  };
 }
 
-exports.getById = async function (req, res) {
-  const client = await Client.findOne({ where: { id: req.params.id } })
-  res.json(client)
-}
+exports.list = async function (req, res, next) {
+  try {
+    const clients = await Client.findAll({ order: [['id', 'ASC']] });
+    res.json(clients);
+  } catch (err) {
+    next(err);
+  }
+};
 
-exports.create = async function (req, res) {
-  const created = await Client.create(req.body)
-  res.json(created)
-}
+exports.getById = async function (req, res, next) {
+  try {
+    const client = await Client.findByPk(req.params.id);
+    if (!client) {
+      return res.status(404).json({ error: 'Client not found' });
+    }
+    res.json(client);
+  } catch (err) {
+    next(err);
+  }
+};
 
-exports.update = async function (req, res) {
-  await Client.update(req.body,  { where: { id: req.params.id } })
-  res.json(req.body)
-}
+exports.create = async function (req, res, next) {
+  try {
+    const payload = pickClientPayload(req.body);
+    if (!payload.name || !payload.code) {
+      return res.status(400).json({ error: 'Name and code are required.' });
+    }
+    const created = await Client.create(payload);
+    res.status(201).json(created);
+  } catch (err) {
+    next(err);
+  }
+};
 
-exports.delete = async function (req, res) {
-  const result = await Client.destroy({ where: { id: req.params.id } })
-  res.json(result)
-}
+exports.update = async function (req, res, next) {
+  try {
+    const payload = pickClientPayload(req.body);
+    if (!payload.name || !payload.code) {
+      return res.status(400).json({ error: 'Name and code are required.' });
+    }
+    const [updated] = await Client.update(payload, { where: { id: req.params.id } });
+    if (!updated) {
+      return res.status(404).json({ error: 'Client not found' });
+    }
+    const client = await Client.findByPk(req.params.id);
+    res.json(client);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.delete = async function (req, res, next) {
+  try {
+    const result = await Client.destroy({ where: { id: req.params.id } });
+    if (!result) {
+      return res.status(404).json({ error: 'Client not found' });
+    }
+    res.json({ deleted: result });
+  } catch (err) {
+    next(err);
+  }
+};
