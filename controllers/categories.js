@@ -2,6 +2,16 @@ const models = require('../models');
 
 const { Category } = models;
 
+function pickCategoryPayload(body) {
+  const b = body || {};
+  return {
+    name: b.name != null ? String(b.name).trim() : '',
+    code: b.code != null ? String(b.code).trim() : '',
+    description: b.description != null ? String(b.description).trim() : '',
+    img: b.img != null ? String(b.img).trim() : '',
+  };
+}
+
 exports.list = async function (req, res, next) {
   try {
     const categories = await Category.findAll({ order: [['id', 'ASC']] });
@@ -25,7 +35,11 @@ exports.getById = async function (req, res, next) {
 
 exports.create = async function (req, res, next) {
   try {
-    const created = await Category.create(req.body);
+    const payload = pickCategoryPayload(req.body);
+    if (!payload.name || !payload.code) {
+      return res.status(400).json({ error: 'Name and code are required.' });
+    }
+    const created = await Category.create(payload);
     res.status(201).json(created);
   } catch (err) {
     next(err);
@@ -34,7 +48,11 @@ exports.create = async function (req, res, next) {
 
 exports.update = async function (req, res, next) {
   try {
-    const [updated] = await Category.update(req.body, { where: { id: req.params.id } });
+    const payload = pickCategoryPayload(req.body);
+    if (!payload.name || !payload.code) {
+      return res.status(400).json({ error: 'Name and code are required.' });
+    }
+    const [updated] = await Category.update(payload, { where: { id: req.params.id } });
     if (!updated) {
       return res.status(404).json({ error: 'Category not found' });
     }
