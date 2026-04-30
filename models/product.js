@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         otherKey: 'unitOfMeasureId',
       });
       this.hasMany(models.OrderDetail, { foreignKey: 'productId', as: 'orderDetails' });
+      this.hasMany(models.PurchaseItem, { foreignKey: 'productId', as: 'purchaseItems' });
     }
   };
   Product.init({
@@ -31,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     code: DataTypes.STRING,
     img: DataTypes.STRING,
+    stock: DataTypes.FLOAT,
+    cost: DataTypes.FLOAT,
+    price: DataTypes.FLOAT,
+    totalSelled: DataTypes.FLOAT,
+    quantitySelled: DataTypes.FLOAT,
     categoryId: DataTypes.INTEGER,
     vendorId: DataTypes.INTEGER,
   }, {

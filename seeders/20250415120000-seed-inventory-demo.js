@@ -168,6 +168,13 @@ module.exports = {
         brand: brands[i % brands.length],
         currentPrice: 9.99 + i * 1.5,
       });
+
+      // Keep legacy inventory fields in sync for the Angular inventory pages.
+      await p.update({
+        stock: qty,
+        price: 9.99 + i * 1.5,
+        cost: Math.max(0, 9.99 + i * 1.5 - 2.5),
+      });
     }
   },
 

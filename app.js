@@ -16,12 +16,13 @@ var unitOfMeasuresRouter = require('./routes/unitOfMeasures');
 var uploadProductImage = require('./routes/upload-product-image');
 var ordersRouter = require('./routes/orders');
 var orderDetailsRouter = require('./routes/orderDetails');
+var purchaseItemsRouter = require('./routes/purchase-items');
 
 var app = express();
 
 function looksLikeApiRequest(req) {
   var u = req.originalUrl || req.url || '';
-  return /^\/(products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads|orders|orderDetails)(\/|\?|$)/.test(
+  return /^\/(products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads|orders|orderDetails|purchase-items)(\/|\?|$)/.test(
     u
   );
 }
@@ -54,6 +55,7 @@ app.use('/vendors', vendorsRouter);
 app.use('/unitOfMeasures', unitOfMeasuresRouter);
 app.use('/orders', ordersRouter);
 app.use('/orderDetails', orderDetailsRouter);
+app.use('/purchase-items', purchaseItemsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
