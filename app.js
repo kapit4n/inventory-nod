@@ -18,12 +18,13 @@ var ordersRouter = require('./routes/orders');
 var orderDetailsRouter = require('./routes/orderDetails');
 var purchaseItemsRouter = require('./routes/purchase-items');
 var inventoryLotsRouter = require('./routes/inventory-lots');
+var apiMetadataRouter = require('./routes/api-metadata');
 
 var app = express();
 
 function looksLikeApiRequest(req) {
   var u = req.originalUrl || req.url || '';
-  return /^\/(products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads|orders|orderDetails|purchase-items|inventory-lots)(\/|\?|$)/.test(
+  return /^\/(api|products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads|orders|orderDetails|purchase-items|inventory-lots)(\/|\?|$)/.test(
     u
   );
 }
@@ -47,6 +48,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/api', apiMetadataRouter);
 app.use('/products', productsRouter);
 app.use('/productPresentations', productPresentationsRouter);
 app.use('/clients', clientsRouter);
