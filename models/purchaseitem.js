@@ -14,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       quantity: DataTypes.FLOAT,
       price: DataTypes.FLOAT,
       totalPrice: DataTypes.FLOAT,
+      expiryDate: DataTypes.DATEONLY,
+      batchCode: DataTypes.STRING,
     },
     {
       sequelize,

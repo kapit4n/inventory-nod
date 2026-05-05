@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.hasMany(models.OrderDetail, { foreignKey: 'productId', as: 'orderDetails' });
       this.hasMany(models.PurchaseItem, { foreignKey: 'productId', as: 'purchaseItems' });
+      this.hasMany(models.InventoryLot, { foreignKey: 'productId', as: 'inventoryLots' });
     }
   };
   Product.init({
@@ -39,6 +40,8 @@ module.exports = (sequelize, DataTypes) => {
     quantitySelled: DataTypes.FLOAT,
     categoryId: DataTypes.INTEGER,
     vendorId: DataTypes.INTEGER,
+    trackExpiry: DataTypes.BOOLEAN,
+    defaultShelfLifeDays: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Product',

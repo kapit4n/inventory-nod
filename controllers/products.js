@@ -1,6 +1,7 @@
 const models = require('../models');
+const stockOps = require('../lib/inventory-stock-ops');
 
-const { Product, ProductUnitOfMeasure, UnitOfMeasure, Category, Vendor } = models;
+const { Product, ProductUnitOfMeasure, UnitOfMeasure, Category, Vendor, InventoryLot } = models;
 
 const productInclude = [
   { model: Category, required: false },
@@ -16,6 +17,8 @@ function sanitizeProductAttributes(body) {
   delete o.Vendor;
   delete o.ProductPresentations;
   delete o.productPresentations;
+  delete o.inventoryLots;
+  delete o.InventoryLots;
   return o;
 }
 
@@ -40,8 +43,25 @@ async function replaceProductUnitLinks(productId, unitOfMeasureIds) {
 
 exports.list = async function (req, res, next) {
   try {
+    const wantLots = String(req.query.include || '')
+      .split(',')
+      .map((s) => s.trim())
+      .includes('inventoryLots');
+    const include = [...productInclude];
+    if (wantLots) {
+      include.push({
+        model: InventoryLot,
+        as: 'inventoryLots',
+        required: false,
+        separate: true,
+        order: [
+          ['expiryDate', 'ASC'],
+          ['id', 'ASC'],
+        ],
+      });
+    }
     const products = await Product.findAll({
-      include: productInclude,
+      include,
       order: [['id', 'ASC']],
     });
     res.json(products);
@@ -52,9 +72,26 @@ exports.list = async function (req, res, next) {
 
 exports.getById = async function (req, res, next) {
   try {
+    const wantLots = String(req.query.include || '')
+      .split(',')
+      .map((s) => s.trim())
+      .includes('inventoryLots');
+    const include = [...productInclude];
+    if (wantLots) {
+      include.push({
+        model: InventoryLot,
+        as: 'inventoryLots',
+        required: false,
+        separate: true,
+        order: [
+          ['expiryDate', 'ASC'],
+          ['id', 'ASC'],
+        ],
+      });
+    }
     const product = await Product.findOne({
       where: { id: req.params.id },
-      include: productInclude,
+      include,
     });
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
@@ -126,31 +163,44 @@ async function loadProductOr404(req, res) {
   return p;
 }
 
-/** GET /products/addToInventory?id=2&amount=10 */
+/**
+ * GET /products/addToInventory?id=2&amount=10&expiryDate=2026-05-15&batchCode=LOT1
+ * When product.trackExpiry is true, pass expiryDate (YYYY-MM-DD) or set defaultShelfLifeDays on the product.
+ */
 exports.addToInventory = async function (req, res, next) {
   try {
-    const p = await loadProductOr404(req, res);
-    if (!p) return;
+    const id = Number(req.query.id ?? req.params.id);
+    if (!Number.isFinite(id) || id <= 0) {
+      return res.status(400).json({ error: 'Invalid id' });
+    }
     const amount = Math.max(0, parseAmount(req.query.amount, 0));
-    p.stock = parseAmount(p.stock, 0) + amount;
-    await p.save();
-    res.json(p);
+    const updated = await stockOps.receive(id, amount, {
+      expiryDate: req.query.expiryDate,
+      batchCode: req.query.batchCode,
+    });
+    res.json(updated);
   } catch (err) {
+    if (err.status) {
+      return res.status(err.status).json({ error: err.message });
+    }
     next(err);
   }
 };
 
-/** GET /products/reduceInventory?id=2&amount=2 */
+/** GET /products/reduceInventory?id=2&amount=2 — FEFO lot consumption when trackExpiry is true. */
 exports.reduceInventory = async function (req, res, next) {
   try {
-    const p = await loadProductOr404(req, res);
-    if (!p) return;
+    const id = Number(req.query.id ?? req.params.id);
+    if (!Number.isFinite(id) || id <= 0) {
+      return res.status(400).json({ error: 'Invalid id' });
+    }
     const amount = Math.max(0, parseAmount(req.query.amount, 0));
-    const cur = parseAmount(p.stock, 0);
-    p.stock = Math.max(0, cur - amount);
-    await p.save();
-    res.json(p);
+    const updated = await stockOps.reduce(id, amount);
+    res.json(updated);
   } catch (err) {
+    if (err.status) {
+      return res.status(err.status).json({ error: err.message });
+    }
     next(err);
   }
 };
