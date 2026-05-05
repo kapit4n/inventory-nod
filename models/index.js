@@ -20,10 +20,39 @@ if (config.use_env_variable) {
   const storagePath = path.isAbsolute(config.storage)
     ? config.storage
     : path.join(__dirname, '..', config.storage);
+  /**
+   * SQLite file locking: default Sequelize pool (max 5) opens multiple sqlite3
+   * handles on one file → SQLITE_BUSY / pool acquire timeouts under concurrent API use.
+   * Single pooled connection + WAL + busy_timeout matches SQLite’s single-writer model.
+   */
   sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: storagePath,
     logging: false,
+    pool: {
+      max: 1,
+      min: 0,
+      acquire: 120000,
+      idle: 10000,
+    },
+    retry: {
+      max: 8,
+      match: [
+        'SQLITE_BUSY: database is locked',
+        /SQLITE_BUSY/i,
+        /database is locked/i,
+      ],
+    },
+    hooks: {
+      afterConnect: async (connection) => {
+        await new Promise((resolve, reject) => {
+          connection.exec(
+            'PRAGMA journal_mode=WAL; PRAGMA busy_timeout=30000; PRAGMA synchronous=NORMAL;',
+            (err) => (err ? reject(err) : resolve())
+          );
+        });
+      },
+    },
   });
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
