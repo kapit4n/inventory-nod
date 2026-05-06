@@ -47,7 +47,7 @@ if (config.use_env_variable) {
       afterConnect: async (connection) => {
         await new Promise((resolve, reject) => {
           connection.exec(
-            'PRAGMA journal_mode=WAL; PRAGMA busy_timeout=30000; PRAGMA synchronous=NORMAL;',
+            'PRAGMA journal_mode=WAL; PRAGMA busy_timeout=60000; PRAGMA synchronous=NORMAL;',
             (err) => (err ? reject(err) : resolve())
           );
         });

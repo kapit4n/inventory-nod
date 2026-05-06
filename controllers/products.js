@@ -1,5 +1,6 @@
 const models = require('../models');
 const stockOps = require('../lib/inventory-stock-ops');
+const { runExclusive } = require('../lib/inventory-mutation-queue');
 
 const { Product, ProductUnitOfMeasure, UnitOfMeasure, Category, Vendor, InventoryLot } = models;
 
@@ -208,12 +209,14 @@ exports.reduceInventory = async function (req, res, next) {
 /** GET /products/updateTotalSelled?id=2&amount=22.98 */
 exports.updateTotalSelled = async function (req, res, next) {
   try {
-    const p = await loadProductOr404(req, res);
-    if (!p) return;
-    const amount = parseAmount(req.query.amount, 0);
-    p.totalSelled = parseAmount(p.totalSelled, 0) + amount;
-    await p.save();
-    res.json(p);
+    await runExclusive(async () => {
+      const p = await loadProductOr404(req, res);
+      if (!p) return;
+      const amount = parseAmount(req.query.amount, 0);
+      p.totalSelled = parseAmount(p.totalSelled, 0) + amount;
+      await p.save();
+      res.json(p);
+    });
   } catch (err) {
     next(err);
   }
@@ -222,12 +225,14 @@ exports.updateTotalSelled = async function (req, res, next) {
 /** GET /products/updateQuantitySelled?id=2&amount=2 */
 exports.updateQuantitySelled = async function (req, res, next) {
   try {
-    const p = await loadProductOr404(req, res);
-    if (!p) return;
-    const amount = parseAmount(req.query.amount, 0);
-    p.quantitySelled = parseAmount(p.quantitySelled, 0) + amount;
-    await p.save();
-    res.json(p);
+    await runExclusive(async () => {
+      const p = await loadProductOr404(req, res);
+      if (!p) return;
+      const amount = parseAmount(req.query.amount, 0);
+      p.quantitySelled = parseAmount(p.quantitySelled, 0) + amount;
+      await p.save();
+      res.json(p);
+    });
   } catch (err) {
     next(err);
   }
