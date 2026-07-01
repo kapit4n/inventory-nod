@@ -1,4 +1,5 @@
 const models = require('../models');
+const { Op } = require('sequelize');
 const { Order, Client } = models;
 
 function pickOrderBody(body, customerId) {
@@ -10,6 +11,10 @@ function pickOrderBody(body, customerId) {
     paid: Boolean(b.paid),
     delivered: Boolean(b.delivered),
     deliveryDate: b.deliveryDate ? new Date(b.deliveryDate) : null,
+    paidCash: Number(b.paidCash) || 0,
+    paidQr: Number(b.paidQr) || 0,
+    totalDiscount: Number(b.totalDiscount) || 0,
+    totalReturn: Number(b.totalReturn) || 0,
   };
 }
 
@@ -41,6 +46,48 @@ exports.create = async function (req, res, next) {
     const created = await Order.create(pickOrderBody(req.body, customerId));
     const plain = created.get({ plain: true });
     res.json({ ...plain, id: created.id });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/** GET /orders/today-summary — aggregate of today's paid orders. */
+exports.todaySummary = async function (req, res, next) {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const rows = await Order.findAll({
+      where: {
+        createdAt: { [Op.gte]: today, [Op.lt]: tomorrow },
+        paid: true,
+      },
+    });
+
+    const summary = rows.reduce(
+      (acc, o) => {
+        acc.orderCount++;
+        acc.totalSales += Number(o.total) || 0;
+        acc.totalCash += Number(o.paidCash) || 0;
+        acc.totalQr += Number(o.paidQr) || 0;
+        acc.totalDiscount += Number(o.totalDiscount) || 0;
+        acc.totalReturn += Number(o.totalReturn) || 0;
+        return acc;
+      },
+      {
+        date: today.toISOString().split('T')[0],
+        orderCount: 0,
+        totalSales: 0,
+        totalCash: 0,
+        totalQr: 0,
+        totalDiscount: 0,
+        totalReturn: 0,
+      }
+    );
+
+    res.json(summary);
   } catch (err) {
     next(err);
   }

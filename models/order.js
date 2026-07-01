@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       paid: DataTypes.BOOLEAN,
       delivered: DataTypes.BOOLEAN,
       deliveryDate: DataTypes.DATE,
+      paidCash: DataTypes.FLOAT,
+      paidQr: DataTypes.FLOAT,
+      totalDiscount: DataTypes.FLOAT,
+      totalReturn: DataTypes.FLOAT,
     },
     {
       sequelize,
