@@ -4,7 +4,8 @@ var ctrl = require('../controllers/ang-questions');
 
 router.get('/', ctrl.list);
 router.post('/', ctrl.create);
-router.post('/seed', ctrl.seed);
+router.post('/dedup', ctrl.dedup);
+
 router.put('/:id', ctrl.update);
 router.get('/:id', ctrl.getById);
 router.delete('/:id', ctrl.delete);

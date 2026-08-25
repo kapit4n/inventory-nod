@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'vendorId',
         onDelete: 'SET NULL',
       });
+      this.belongsTo(models.StoreProfile, {
+        foreignKey: 'storeProfileId',
+        onDelete: 'SET NULL',
+      });
       this.belongsToMany(models.UnitOfMeasure, {
         through: models.ProductUnitOfMeasure,
         foreignKey: 'productId',
@@ -40,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     quantitySelled: DataTypes.FLOAT,
     categoryId: DataTypes.INTEGER,
     vendorId: DataTypes.INTEGER,
+    storeProfileId: DataTypes.INTEGER,
     trackExpiry: DataTypes.BOOLEAN,
     defaultShelfLifeDays: DataTypes.INTEGER,
   }, {

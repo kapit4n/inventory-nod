@@ -1,6 +1,35 @@
 const models = require('../models');
 const { AngQuestion } = models;
 
+exports.dedup = async function (req, res, next) {
+  try {
+    const { Op, literal } = require('sequelize');
+    const duplicates = await AngQuestion.findAll({
+      attributes: ['text', [literal('COUNT(*)'), 'count']],
+      group: ['text'],
+      having: literal('COUNT(*) > 1'),
+      raw: true,
+    });
+    let removed = 0;
+    for (const dup of duplicates) {
+      const rows = await AngQuestion.findAll({
+        where: { text: dup.text },
+        order: [['createdAt', 'ASC']],
+      });
+      const keep = rows[0];
+      for (const row of rows) {
+        if (row.id !== keep.id) {
+          await row.destroy();
+          removed++;
+        }
+      }
+    }
+    res.json({ removed });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.list = async function (req, res, next) {
   try {
     const questions = await AngQuestion.findAll({ order: [['createdAt', 'DESC']] });

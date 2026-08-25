@@ -14,7 +14,12 @@ function pickCategoryPayload(body) {
 
 exports.list = async function (req, res, next) {
   try {
-    const categories = await Category.findAll({ order: [['id', 'ASC']] });
+    const where = {};
+    const storeProfileId = Number(req.query.storeProfileId);
+    if (Number.isFinite(storeProfileId) && storeProfileId > 0) {
+      where.storeProfileId = storeProfileId;
+    }
+    const categories = await Category.findAll({ where, order: [['id', 'ASC']] });
     res.json(categories);
   } catch (err) {
     next(err);

@@ -42,8 +42,24 @@ async function syncUnitLabelFromId(productId, unitOfMeasureId, fallbackUnitStrin
 
 exports.list = async function (req, res, next) {
   try {
+    const storeProfileId = Number(req.query.storeProfileId);
+    const includeConfig = [{ all: true, nested: true }];
+    const where = {};
+
+    let productWhere = undefined;
+    if (Number.isFinite(storeProfileId) && storeProfileId > 0) {
+      productWhere = { storeProfileId };
+    }
+
     const productPresentations = await ProductPresentation.findAll({
-      include: [{ all: true, nested: true }],
+      include: [
+        {
+          model: Product,
+          required: !!productWhere,
+          where: productWhere,
+        },
+        { model: UnitOfMeasure },
+      ],
       order: [['id', 'ASC']],
     });
     res.json(productPresentations);

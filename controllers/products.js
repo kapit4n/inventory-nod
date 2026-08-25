@@ -61,7 +61,13 @@ exports.list = async function (req, res, next) {
         ],
       });
     }
+    const where = {};
+    const storeProfileId = Number(req.query.storeProfileId);
+    if (Number.isFinite(storeProfileId) && storeProfileId > 0) {
+      where.storeProfileId = storeProfileId;
+    }
     const products = await Product.findAll({
+      where,
       include,
       order: [['id', 'ASC']],
     });
