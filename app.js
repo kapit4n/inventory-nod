@@ -23,12 +23,13 @@ var angQuestionsRouter = require('./routes/ang-questions');
 var angExamsRouter = require('./routes/ang-exams');
 var angResultsRouter = require('./routes/ang-results');
 var storeProfilesRouter = require('./routes/storeprofiles');
+var catalogTemplatesRouter = require('./routes/catalogtemplates');
 
 var app = express();
 
 function looksLikeApiRequest(req) {
   var u = req.originalUrl || req.url || '';
-  return /^\/(api|products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads|orders|orderDetails|purchase-items|inventory-lots|storeProfiles|ang-questions|ang-exams|ang-results)(\/|\?|$)/.test(
+  return /^\/(api|products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads|orders|orderDetails|purchase-items|inventory-lots|storeProfiles|catalogTemplates|ang-questions|ang-exams|ang-results)(\/|\?|$)/.test(
     u
   );
 }
@@ -68,6 +69,7 @@ app.use('/ang-questions', angQuestionsRouter);
 app.use('/ang-exams', angExamsRouter);
 app.use('/ang-results', angResultsRouter);
 app.use('/storeProfiles', storeProfilesRouter);
+app.use('/catalogTemplates', catalogTemplatesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
