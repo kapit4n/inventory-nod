@@ -52,6 +52,9 @@ exports.create = async function (req, res, next) {
     if (b.productVariantId) {
       detailPayload.productVariantId = Number(b.productVariantId);
     }
+    if (b.unitLabel) {
+      detailPayload.unitLabel = String(b.unitLabel);
+    }
     const created = await OrderDetail.create(detailPayload);
 
     console.log(created);

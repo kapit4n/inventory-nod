@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     storeProfileId: DataTypes.INTEGER,
     trackExpiry: DataTypes.BOOLEAN,
     defaultShelfLifeDays: DataTypes.INTEGER,
+    sellingMode: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Product',

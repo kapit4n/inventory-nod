@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       price: DataTypes.FLOAT,
       discount: DataTypes.FLOAT,
       totalPrice: DataTypes.FLOAT,
+      unitLabel: { type: DataTypes.STRING, allowNull: true },
     },
     {
       sequelize,
