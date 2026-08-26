@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       OrderDetail.belongsTo(models.Order, { foreignKey: 'orderId', as: 'order' });
       OrderDetail.belongsTo(models.Product, { foreignKey: 'productId', as: 'product' });
+      OrderDetail.belongsTo(models.ProductVariant, { foreignKey: 'productVariantId', as: 'variant' });
     }
   }
 
@@ -13,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       orderId: DataTypes.INTEGER,
       productId: DataTypes.INTEGER,
+      productVariantId: { type: DataTypes.INTEGER, allowNull: true },
       quantity: DataTypes.FLOAT,
       price: DataTypes.FLOAT,
       discount: DataTypes.FLOAT,

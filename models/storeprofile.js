@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.hasMany(models.Product, { foreignKey: 'storeProfileId', as: 'products' });
       this.hasMany(models.Category, { foreignKey: 'storeProfileId', as: 'categories' });
+      this.hasMany(models.ProductAttributeDefinition, { foreignKey: 'storeProfileId', as: 'attributeDefinitions' });
     }
   }
   StoreProfile.init({

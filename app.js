@@ -24,12 +24,15 @@ var angExamsRouter = require('./routes/ang-exams');
 var angResultsRouter = require('./routes/ang-results');
 var storeProfilesRouter = require('./routes/storeprofiles');
 var catalogTemplatesRouter = require('./routes/catalogtemplates');
+var productAttributeDefsRouter = require('./routes/productattributedefinitions');
+var productAttributeValuesRouter = require('./routes/productattributevalues');
+var productVariantsRouter = require('./routes/productvariants');
 
 var app = express();
 
 function looksLikeApiRequest(req) {
   var u = req.originalUrl || req.url || '';
-  return /^\/(api|products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads|orders|orderDetails|purchase-items|inventory-lots|storeProfiles|catalogTemplates|ang-questions|ang-exams|ang-results)(\/|\?|$)/.test(
+  return /^\/(api|products|productPresentations|clients|cashiers|categories|vendors|unitOfMeasures|uploads|orders|orderDetails|purchase-items|inventory-lots|storeProfiles|catalogTemplates|productAttributeDefinitions|productAttributeValues|productVariants|ang-questions|ang-exams|ang-results)(\/|\?|$)/.test(
     u
   );
 }
@@ -70,6 +73,9 @@ app.use('/ang-exams', angExamsRouter);
 app.use('/ang-results', angResultsRouter);
 app.use('/storeProfiles', storeProfilesRouter);
 app.use('/catalogTemplates', catalogTemplatesRouter);
+app.use('/productAttributeDefinitions', productAttributeDefsRouter);
+app.use('/productAttributeValues', productAttributeValuesRouter);
+app.use('/productVariants', productVariantsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

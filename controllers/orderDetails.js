@@ -1,9 +1,10 @@
 const models = require('../models');
-const { OrderDetail, Product, Order } = models;
+const { OrderDetail, Product, Order, ProductVariant } = models;
 
 const detailInclude = [
   { model: Product, as: 'product', required: false },
   { model: Order, as: 'order', required: false },
+  { model: ProductVariant, as: 'variant', required: false },
 ];
 
 function serializeDetail(row) {
@@ -15,6 +16,9 @@ function serializeDetail(row) {
   }
   if (plain.order) {
     out.order = plain.order;
+  }
+  if (plain.variant) {
+    out.variant = plain.variant;
   }
   return out;
 }
@@ -37,14 +41,18 @@ exports.create = async function (req, res, next) {
   try {
     const b = req.body || {};
     const price = Number(b.price != null ? b.price : b.currentPrice) || 0;
-    const created = await OrderDetail.create({
+    const detailPayload = {
       orderId: Number(b.orderId),
       productId: Number(b.productId),
       quantity: Number(b.quantity) || 0,
       discount: Number(b.discount) || 0,
       totalPrice: Number(b.totalPrice) || 0,
       price,
-    });
+    };
+    if (b.productVariantId) {
+      detailPayload.productVariantId = Number(b.productVariantId);
+    }
+    const created = await OrderDetail.create(detailPayload);
 
     console.log(created);
 

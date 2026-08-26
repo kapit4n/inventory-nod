@@ -30,6 +30,8 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.OrderDetail, { foreignKey: 'productId', as: 'orderDetails' });
       this.hasMany(models.PurchaseItem, { foreignKey: 'productId', as: 'purchaseItems' });
       this.hasMany(models.InventoryLot, { foreignKey: 'productId', as: 'inventoryLots' });
+      this.hasMany(models.ProductAttributeValue, { foreignKey: 'productId', as: 'attributeValues' });
+      this.hasMany(models.ProductVariant, { foreignKey: 'productId', as: 'variants' });
     }
   };
   Product.init({
