@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Phase 7 — Business Template Validation (MB-034–037)
+ * Business Template Validation (Phase 7–9, MB-034–048)
  *
  * Validates seed data integrity for all 6 catalog templates.
- * Run from inventory-nod: node test/phase7-template-validation.js
+ * Run from inventory-nod: node test/template-validation.js
  */
 
 const path = require('path');
@@ -14,6 +14,8 @@ const templates = [
   { slug: 'chicken-store', name: 'Chicken Store', expectedType: 'chicken-store', minCats: 5, minProds: 15 },
   { slug: 'butcher-shop', name: 'Butcher Shop', expectedType: 'butcher', minCats: 5, minProds: 15 },
   { slug: 'clothing-store', name: 'Clothing Store', expectedType: 'clothing', minCats: 5, minProds: 15 },
+  { slug: 'bakery', name: 'Bakery', expectedType: 'bakery', minCats: 5, minProds: 15 },
+  { slug: 'hardware-store', name: 'Hardware Store', expectedType: 'hardware', minCats: 5, minProds: 15 },
 ];
 
 let passed = 0;
@@ -126,7 +128,7 @@ async function run() {
     }
   }
 
-  console.log(`\n=== Phase 7 Template Validation ===`);
+  console.log(`\n=== Template Validation (Phase 7–9) ===`);
   console.log(`Passed: ${passed}/${templates.length}`);
   console.log(`Failed: ${failed}/${templates.length}`);
   if (failures.length) {
