@@ -46,7 +46,7 @@ const profiles = [
     address: 'Av. Principal 123, Cochabamba',
     capabilities: ['BARCODE', 'WEIGHT_PRODUCTS', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION', 'LOYALTY'],
     receiptConfig: { paperWidth: 80, headerLines: ['Mi Supermarket - Tu tienda de confianza'], footerLines: ['Gracias por su compra'] },
-    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
   },
   {
     name: 'Chicken Store', slug: 'chicken-store', description: 'Chicken products, combos and sides',
@@ -56,7 +56,7 @@ const profiles = [
     address: 'Calle Mercado 456, Cochabamba',
     capabilities: ['BARCODE', 'COMBOS', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION'],
     receiptConfig: { paperWidth: 80, headerLines: ['Pollos Don Pedro - El mejor sabor'], footerLines: ['Vengan pronto!'] },
-    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
   },
   {
     name: 'Hardware Store', slug: 'hardware', description: 'Tools, building materials and electrical supplies',
@@ -66,7 +66,7 @@ const profiles = [
     address: 'Zona Industrial 789, Cochabamba',
     capabilities: ['BARCODE', 'VARIABLE_QUANTITY', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION'],
     receiptConfig: { paperWidth: 80, headerLines: ['Ferreteria Industrial - Todo para tu proyecto'], footerLines: ['Garantia en todos nuestros productos'] },
-    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
   },
   {
     name: 'Auto Parts', slug: 'auto-parts', description: 'Automotive parts, fluids and accessories',
@@ -76,7 +76,7 @@ const profiles = [
     address: 'Av. Vehicles 321, Cochabamba',
     capabilities: ['BARCODE', 'SERIAL_NUMBERS', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION'],
     receiptConfig: { paperWidth: 80, headerLines: ['AutoPartes Express - Repuestos originales'], footerLines: ['Consulte por garantia'] },
-    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
   },
   {
     name: 'Bakery', slug: 'bakery', description: 'Breads, pastries, cakes and desserts',
@@ -86,7 +86,7 @@ const profiles = [
     address: 'Calle Dulce 654, Cochabamba',
     capabilities: ['WEIGHT_PRODUCTS', 'COMBOS', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION', 'LOYALTY'],
     receiptConfig: { paperWidth: 57, headerLines: ['Panaderia La Delicia - Momentos dulces'], footerLines: ['Hecho con amor'] },
-    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
   },
 ];
 

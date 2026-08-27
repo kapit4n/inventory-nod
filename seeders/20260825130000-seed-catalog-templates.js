@@ -24,7 +24,7 @@ const templates = [
     businessType: 'supermarket',
     capabilities: ['BARCODE', 'WEIGHT_PRODUCTS', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION', 'LOYALTY'],
     receiptConfig: { paperWidth: 80, headerLines: ['Mi Supermarket'], footerLines: ['Gracias por su compra'] },
-    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
     categories: [
       { name: 'Beverages', code: 'TPL-SM-C01', description: 'Drinks and juices', sortOrder: 0 },
       { name: 'Dairy', code: 'TPL-SM-C02', description: 'Milk, cheese and yogurt', sortOrder: 1 },
@@ -55,7 +55,7 @@ const templates = [
     businessType: 'chicken-store',
     capabilities: ['BARCODE', 'COMBOS', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION'],
     receiptConfig: { paperWidth: 80, headerLines: ['Pollos Don Pedro'], footerLines: ['Vengan pronto!'] },
-    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
     categories: [
       { name: 'Whole Chicken', code: 'TPL-CH-C01', description: 'Whole and grilled chicken', sortOrder: 0 },
       { name: 'Chicken Cuts', code: 'TPL-CH-C02', description: 'Breast, wings, thighs and fillets', sortOrder: 1 },
@@ -86,7 +86,7 @@ const templates = [
     businessType: 'butcher',
     capabilities: ['WEIGHT_PRODUCTS', 'LOT_TRACKING', 'EXPIRATION', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION'],
     receiptConfig: { paperWidth: 80, headerLines: ['Carniceria Don Carlos'], footerLines: ['Carne fresca del dia'] },
-    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'WEIGHT' },
+    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'WEIGHT', enabledPaymentTypes: [1, 4] },
     categories: [
       { name: 'Beef', code: 'TPL-BC-C01', description: 'Res y cortes de res', sortOrder: 0 },
       { name: 'Pork', code: 'TPL-BC-C02', description: 'Cerdo y cortes de cerdo', sortOrder: 1 },
@@ -117,7 +117,7 @@ const templates = [
     businessType: 'clothing',
     capabilities: ['BARCODE', 'PRODUCT_VARIANTS', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION', 'LOYALTY'],
     receiptConfig: { paperWidth: 80, headerLines: ['Moda Express'], footerLines: ['Cambios dentro de 30 dias'] },
-    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'VARIANT' },
+    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'VARIANT', enabledPaymentTypes: [1, 4] },
     categories: [
       { name: 'T-Shirts', code: 'TPL-CL-C01', description: 'Camisetas y remeras', sortOrder: 0 },
       { name: 'Pants', code: 'TPL-CL-C02', description: 'Pantalones y jeans', sortOrder: 1 },
@@ -148,7 +148,7 @@ const templates = [
     businessType: 'bakery',
     capabilities: ['WEIGHT_PRODUCTS', 'COMBOS', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION', 'LOYALTY'],
     receiptConfig: { paperWidth: 57, headerLines: ['Panaderia La Delicia'], footerLines: ['Hecho con amor'] },
-    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 3, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
     categories: [
       { name: 'Breads', code: 'TPL-BK-C01', description: 'Pan francés, pan de molde y más', sortOrder: 0 },
       { name: 'Pastries', code: 'TPL-BK-C02', description: 'Croissants, pastelitos y empanadas', sortOrder: 1 },
@@ -179,7 +179,7 @@ const templates = [
     businessType: 'hardware',
     capabilities: ['BARCODE', 'VARIABLE_QUANTITY', 'DISCOUNTS', 'CUSTOMERS', 'TAX_CALCULATION'],
     receiptConfig: { paperWidth: 80, headerLines: ['Ferreteria Industrial'], footerLines: ['Garantia en todos nuestros productos'] },
-    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' },
+    posConfig: { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4] },
     categories: [
       { name: 'Tools', code: 'TPL-HW-C01', description: 'Hand tools and power tools', sortOrder: 0 },
       { name: 'Fasteners', code: 'TPL-HW-C02', description: 'Screws, nails and bolts', sortOrder: 1 },
