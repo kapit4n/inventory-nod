@@ -52,14 +52,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     posConfig: {
       type: DataTypes.TEXT,
-      defaultValue: '{"catalogColumns":4,"showProductImages":true,"quickProducts":[],"defaultSellingMode":"UNIT"}',
+      defaultValue: '{"catalogColumns":4,"showProductImages":true,"quickProducts":[],"defaultSellingMode":"UNIT","enabledPaymentTypes":[1,4],"catalogCardSize":"medium"}',
       get() {
         const raw = this.getDataValue('posConfig');
-        if (!raw) return { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' };
-        try { return JSON.parse(raw); } catch { return { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' }; }
+        const fallback = { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4], catalogCardSize: 'medium' };
+        if (!raw) return fallback;
+        try { return { ...fallback, ...JSON.parse(raw) }; } catch { return fallback; }
       },
       set(val) {
-        this.setDataValue('posConfig', JSON.stringify(val || { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT' }));
+        this.setDataValue('posConfig', JSON.stringify(val || { catalogColumns: 4, showProductImages: true, quickProducts: [], defaultSellingMode: 'UNIT', enabledPaymentTypes: [1, 4], catalogCardSize: 'medium' }));
       },
     },
   }, {

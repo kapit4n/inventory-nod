@@ -8,8 +8,8 @@ function pickProfilePayload(body) {
     name: b.name != null ? String(b.name).trim() : '',
     slug: b.slug != null ? String(b.slug).trim() : '',
     description: b.description != null ? String(b.description).trim() : '',
-    active: b.active !== undefined ? Boolean(b.active) : true,
-    defaultProfile: b.defaultProfile !== undefined ? Boolean(b.defaultProfile) : false,
+    active: b.active !== undefined ? Boolean(b.active) : undefined,
+    defaultProfile: b.defaultProfile !== undefined ? Boolean(b.defaultProfile) : undefined,
 
     // Business configuration (MB-007)
     businessType: b.businessType != null ? String(b.businessType).trim() : undefined,
@@ -79,6 +79,33 @@ exports.update = async function (req, res, next) {
     }
     const profile = await StoreProfile.findByPk(req.params.id);
     res.json(profile);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Set a store profile as the application default (the business the POS opens with).
+ * Atomically clears the flag on every other profile so only one default exists.
+ */
+exports.setDefault = async function (req, res, next) {
+  try {
+    const profile = await StoreProfile.findByPk(req.params.id);
+    if (!profile) {
+      return res.status(404).json({ error: 'Store profile not found' });
+    }
+    await models.sequelize.transaction(async (t) => {
+      await StoreProfile.update(
+        { defaultProfile: false },
+        { where: {}, transaction: t }
+      );
+      await StoreProfile.update(
+        { defaultProfile: true },
+        { where: { id: req.params.id }, transaction: t }
+      );
+    });
+    const updated = await StoreProfile.findByPk(req.params.id);
+    res.json(updated);
   } catch (err) {
     next(err);
   }
