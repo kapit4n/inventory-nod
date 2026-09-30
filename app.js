@@ -27,6 +27,7 @@ var catalogTemplatesRouter = require('./routes/catalogtemplates');
 var productAttributeDefsRouter = require('./routes/productattributedefinitions');
 var productAttributeValuesRouter = require('./routes/productattributevalues');
 var productVariantsRouter = require('./routes/productvariants');
+var healthRouter = require('./routes/health');
 
 var app = express();
 
@@ -57,6 +58,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api', apiMetadataRouter);
+/* Liveness probe for the Tauri shell's startup handshake — see routes/health.js. */
+app.use('/api', healthRouter);
 app.use('/products', productsRouter);
 app.use('/productPresentations', productPresentationsRouter);
 app.use('/clients', clientsRouter);
