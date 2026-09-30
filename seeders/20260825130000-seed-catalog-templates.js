@@ -11,9 +11,14 @@ async function clearSeedData(queryInterface, Sequelize) {
   }, {});
 }
 
+// Profiles that ship real photography instead of generated SVG placeholders.
+// Their assets are maintained by ng-vendei-full/scripts/import-catalog-photos.sh.
+const IMG_EXT_BY_PROFILE = { 'chicken-store': 'jpg' };
+
 function productImgPath(profileSlug, productName) {
   const slug = productName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  return `assets/vendei/catalog/${profileSlug}/${slug}.svg`;
+  const ext = IMG_EXT_BY_PROFILE[profileSlug] || 'svg';
+  return `assets/vendei/catalog/${profileSlug}/${slug}.${ext}`;
 }
 
 // ─── Template definitions ──────────────────────────────────────────────
